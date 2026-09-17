@@ -246,20 +246,16 @@
                 padding: 2rem !important;
             }
 
-            /* Simple Looping Hero Title Animation */
-            #heroTitleDisplay {
-                display: inline-block;
-                animation: heroFloat 4s ease-in-out infinite;
-                will-change: transform;
+            /* Glassmorphism Blur on Navbar when scrolled */
+            #mainNav {
+                transition: background-color 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
             }
 
-            @keyframes heroFloat {
-                0%, 100% {
-                    transform: translateY(0);
-                }
-                50% {
-                    transform: translateY(-8px);
-                }
+            #mainNav.navbar-shrink {
+                background-color: rgba(255, 255, 255, 0.82) !important;
+                -webkit-backdrop-filter: blur(12px);
+                backdrop-filter: blur(12px);
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             }
         </style>
     </head>
