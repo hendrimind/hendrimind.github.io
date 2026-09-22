@@ -1,4 +1,4 @@
-import { handleOptions, verifyToken, ok, unauthorized } from "../../_lib.js";
+import { handleOptions, verifyToken, ok, unauthorized } from "../_lib.js";
 
 export default async function handler(req, res) {
   if (handleOptions(req, res)) return;

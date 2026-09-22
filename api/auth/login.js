@@ -1,4 +1,4 @@
-import { setCors, handleOptions, signToken, ok, badRequest, unauthorized } from "../../_lib.js";
+import { setCors, handleOptions, signToken, ok, badRequest, unauthorized } from "../_lib.js";
 
 export default async function handler(req, res) {
   if (handleOptions(req, res)) return;

@@ -8,7 +8,7 @@
 // Saat production (GitHub Pages + domain sendiri): Vercel backend URL
 const API_URL = window.location.hostname === "localhost"
   ? "http://localhost:3000/api"
-  : "https://hendrimind-backend.vercel.app/api"; // URL Vercel Anda — ganti jika berbeda
+  : "https://hendrimind-backend.vercel.app/api"; // Vercel backend URL
 
 let galleryData = [];
 let currentFilter = "all";

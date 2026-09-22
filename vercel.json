@@ -40,6 +40,10 @@
       "dest": "/api/gallery/[id].js"
     },
     {
+      "src": "/admin",
+      "dest": "/backend/public/admin.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }

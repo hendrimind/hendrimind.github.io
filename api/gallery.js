@@ -1,4 +1,4 @@
-import db, { handleOptions, verifyToken, ok, created, badRequest, unauthorized } from "../_lib.js";
+import db, { handleOptions, verifyToken, ok, created, badRequest, unauthorized } from "./_lib.js";
 
 export default async function handler(req, res) {
   if (handleOptions(req, res)) return;
