@@ -1,0 +1,8 @@
+{
+  "name": "hendrimind-portfolio",
+  "version": "1.0.0",
+  "description": "Hendrimind photographer portfolio with Vercel serverless backend",
+  "dependencies": {
+    "jsonwebtoken": "^9.0.2"
+  }
+}
