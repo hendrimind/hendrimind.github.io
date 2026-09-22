@@ -4,11 +4,11 @@
 */
 
 // ── Backend API Configuration ────────────────────────────
-// Saat development: http://localhost:3000/api
-// Saat production (GitHub Pages): ganti ke URL backend Anda
+// Saat development (localhost): http://localhost:3000/api
+// Saat production (GitHub Pages + domain sendiri): Vercel backend URL
 const API_URL = window.location.hostname === "localhost"
   ? "http://localhost:3000/api"
-  : "https://hendrimind-api.onrender.com/api"; // Ganti dengan URL backend production Anda
+  : "https://hendrimind-backend.vercel.app/api"; // URL Vercel Anda — ganti jika berbeda
 
 let galleryData = [];
 let currentFilter = "all";
