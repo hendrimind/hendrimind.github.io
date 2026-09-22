@@ -6,7 +6,23 @@
       "use": "@vercel/node"
     },
     {
-      "src": "public/admin.html",
+      "src": "admin.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "index.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "css/styles.css",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/scripts.js",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "js/pixel-effects.js",
       "use": "@vercel/static"
     }
   ],
@@ -45,7 +61,19 @@
     },
     {
       "src": "/admin",
-      "dest": "/public/admin.html"
+      "dest": "/admin.html"
+    },
+    {
+      "src": "/css/(.*)",
+      "dest": "/css/$1"
+    },
+    {
+      "src": "/js/(.*)",
+      "dest": "/js/$1"
+    },
+    {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
     },
     {
       "src": "/(.*)",

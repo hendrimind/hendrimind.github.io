@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard - Hendrimind</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://use.fontawesome.com/releases/v6.3.0/css/all.css" rel="stylesheet" />
+  <style>
+    body { background: #1a1a2e; color: #eee; font-family: 'Segoe UI', sans-serif; }
+    .login-box { max-width: 400px; margin: 100px auto; background: #16213e; border-radius: 12px; padding: 40px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+    .login-box h2 { color: #64a19d; }
+    .login-box .btn-primary { background: #64a19d; border: none; }
+    .login-box .btn-primary:hover { background: #4d8782; }
+    .dashboard { display: none; }
+    .sidebar { background: #16213e; min-height: 100vh; padding: 20px 0; position: fixed; width: 250px; }
+    .sidebar a { color: #a0a0c0; display: block; padding: 12px 25px; text-decoration: none; transition: 0.3s; }
+    .sidebar a:hover, .sidebar a.active { color: #fff; background: rgba(100,161,157,0.2); border-left: 4px solid #64a19d; }
+    .sidebar a i { width: 25px; }
+    .sidebar h4 { color: #64a19d; padding: 0 25px; margin-bottom: 30px; }
+    .main-content { margin-left: 250px; padding: 30px; }
+    .card-custom { background: #16213e; border-radius: 12px; padding: 25px; margin-bottom: 20px; }
+    .stat-card { background: #16213e; border-radius: 12px; padding: 30px; text-align: center; }
+    .stat-card i { font-size: 2.5rem; color: #64a19d; }
+    .stat-card h3 { margin: 10px 0 5px; }
+    .stat-card p { color: #888; margin: 0; }
+    .table-dark-custom { background: transparent; color: #eee; }
+    .table-dark-custom th { border-top: none; color: #64a19d; }
+    .table-dark-custom td { border-color: #2a2a4a; vertical-align: middle; }
+    .gallery-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; }
+    .badge-cat { background: #64a19d; color: #fff; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; }
+    .btn-action { padding: 5px 10px; font-size: 0.85rem; margin: 2px; }
+    .toast-container { position: fixed; top: 20px; right: 20px; z-index: 9999; }
+    .toast-msg { background: #16213e; color: #fff; padding: 15px 25px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #64a19d; box-shadow: 0 4px 12px rgba(0,0,0,0.3); animation: slideIn 0.3s ease; }
+    .toast-msg.error { border-left-color: #e74c3c; }
+    @keyframes slideIn { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+  </style>
+</head>
+<body>
+
+<!-- ── Login Screen ──────────────────────────────────────── -->
+<div id="loginScreen" class="container">
+  <div class="login-box">
+    <h2 class="text-center mb-4"><i class="fas fa-lock"></i> Admin Login</h2>
+    <form id="loginForm">
+      <div class="mb-3">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" id="loginUsername" placeholder="admin" required>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-control" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100">Login</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── Dashboard ─────────────────────────────────────────── -->
+<div id="dashboard" class="dashboard">
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h4><i class="fas fa-camera"></i> HENDRIMIND</h4>
+    <a href="#" class="active" onclick="showSection('overview', this)"><i class="fas fa-chart-line"></i> Overview</a>
+    <a href="#" onclick="showSection('gallery', this)"><i class="fas fa-images"></i> Galeri Foto</a>
+    <a href="#" onclick="showSection('contacts', this)"><i class="fas fa-envelope"></i> Pesan Masuk</a>
+    <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Overview -->
+    <div id="section-overview">
+      <h2 class="mb-4"><i class="fas fa-chart-line"></i> Overview</h2>
+      <div class="row mb-4">
+        <div class="col-md-4 mb-3">
+          <div class="stat-card">
+            <i class="fas fa-images"></i>
+            <h3 id="statGallery">0</h3>
+            <p>Total Foto</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stat-card">
+            <i class="fas fa-envelope"></i>
+            <h3 id="statContacts">0</h3>
+            <p>Total Pesan</p>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="stat-card">
+            <i class="fas fa-envelope-open"></i>
+            <h3 id="statUnread">0</h3>
+            <p>Pesan Belum Dibaca</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div id="section-gallery" style="display:none;">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-images"></i> Galeri Foto</h2>
+        <button class="btn btn-primary" onclick="showAddForm()"><i class="fas fa-plus"></i> Tambah Foto</button>
+      </div>
+
+      <!-- Add/Edit Form -->
+      <div class="card-custom" id="photoForm" style="display:none;">
+        <h4 id="formTitle">Tambah Foto Baru</h4>
+        <form id="galleryForm" enctype="multipart/form-data">
+          <input type="hidden" id="photoId">
+          <div class="mb-3">
+            <label class="form-label">Judul Foto</label>
+            <input type="text" class="form-control" id="photoTitle" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Deskripsi</label>
+            <textarea class="form-control" id="photoDesc" rows="2"></textarea>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Kategori</label>
+            <select class="form-control" id="photoCategory" required>
+              <option value="street">Street</option>
+              <option value="portrait">Portrait</option>
+              <option value="nature">Nature</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Gambar</label>
+            <input type="file" class="form-control" id="photoImage" accept="image/*">
+          </div>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Simpan</button>
+          <button type="button" class="btn btn-secondary" onclick="hideAddForm()">Batal</button>
+        </form>
+      </div>
+
+      <!-- Gallery Table -->
+      <div class="card-custom">
+        <table class="table table-dark-custom">
+          <thead>
+            <tr><th>Gambar</th><th>Judul</th><th>Kategori</th><th>Aksi</th></tr>
+          </thead>
+          <tbody id="galleryTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Contacts Section -->
+    <div id="section-contacts" style="display:none;">
+      <h2 class="mb-4"><i class="fas fa-envelope"></i> Pesan Masuk</h2>
+      <div class="card-custom">
+        <table class="table table-dark-custom">
+          <thead>
+            <tr><th>Email</th><th>Nama</th><th>Pesan</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr>
+          </thead>
+          <tbody id="contactsTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── Toast Container ────────────────────────────────────── -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+const API = 'https://hendrimind-backend.vercel.app'; // Vercel backend URL
+let token = localStorage.getItem('admin_token') || '';
+
+/* ── Toast Notification ───────────────────────────────────── */
+function toast(msg, type = 'success') {
+  const div = document.createElement('div');
+  div.className = `toast-msg ${type === 'error' ? 'error' : ''}`;
+  div.textContent = msg;
+  document.getElementById('toastContainer').appendChild(div);
+  setTimeout(() => div.remove(), 3000);
+}
+
+/* ── Auto login if token exists ──────────────────────────── */
+if (token) verifyToken();
+
+async function verifyToken() {
+  try {
+    const res = await fetch(`${API}/api/auth/verify`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) {
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      loadStats();
+      loadGallery();
+      loadContacts();
+    } else {
+      localStorage.removeItem('admin_token');
+      token = '';
+    }
+  } catch {
+    localStorage.removeItem('admin_token');
+    token = '';
+  }
+}
+
+/* ── Login ───────────────────────────────────────────────── */
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const username = document.getElementById('loginUsername').value;
+  const password = document.getElementById('loginPassword').value;
+
+  try {
+    const res = await fetch(`${API}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      token = data.token;
+      localStorage.setItem('admin_token', token);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('dashboard').style.display = 'block';
+      toast('Login berhasil! Selamat datang.');
+      loadStats();
+      loadGallery();
+      loadContacts();
+    } else {
+      toast(data.error || 'Login gagal', 'error');
+    }
+  } catch (err) {
+    toast('Gagal terhubung ke server', 'error');
+  }
+});
+
+/* ── Logout ──────────────────────────────────────────────── */
+function logout() {
+  localStorage.removeItem('admin_token');
+  token = '';
+  location.reload();
+}
+
+/* ── Navigation ──────────────────────────────────────────── */
+function showSection(section, el) {
+  document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+  ['overview', 'gallery', 'contacts'].forEach(s => {
+    document.getElementById(`section-${s}`).style.display = s === section ? 'block' : 'none';
+  });
+  if (section === 'gallery') loadGallery();
+  if (section === 'contacts') loadContacts();
+  if (section === 'overview') loadStats();
+}
+
+/* ── Load Stats ──────────────────────────────────────────── */
+async function loadStats() {
+  try {
+    const [galleryRes, contactRes] = await Promise.all([
+      fetch(`${API}/api/gallery`).then(r => r.json()),
+      fetch(`${API}/api/contact`, { headers: { 'Authorization': `Bearer ${token}` } }).then(r => r.json())
+    ]);
+    document.getElementById('statGallery').textContent = galleryRes.total || 0;
+    document.getElementById('statContacts').textContent = contactRes.total || 0;
+    document.getElementById('statUnread').textContent = (contactRes.data || []).filter(c => c.status === 'unread').length;
+  } catch {}
+}
+
+/* ── Gallery CRUD ────────────────────────────────────────── */
+async function loadGallery() {
+  try {
+    const res = await fetch(`${API}/api/gallery`);
+    const data = await res.json();
+    const tbody = document.getElementById('galleryTableBody');
+    tbody.innerHTML = '';
+
+    (data.data || []).forEach(item => {
+      const imgSrc = item.image.startsWith('http') ? item.image : `${API}${item.image}`;
+      tbody.innerHTML += `
+        <tr>
+          <td><img src="${imgSrc}" class="gallery-thumb" alt="${item.title}"></td>
+          <td>${item.title}</td>
+          <td><span class="badge-cat">${item.category}</span></td>
+          <td>
+            <button class="btn btn-warning btn-action" onclick="editPhoto(${item.id})"><i class="fas fa-edit"></i></button>
+            <button class="btn btn-danger btn-action" onclick="deletePhoto(${item.id})"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>`;
+    });
+  } catch {
+    toast('Gagal memuat data galeri', 'error');
+  }
+}
+
+function showAddForm() {
+  document.getElementById('photoForm').style.display = 'block';
+  document.getElementById('formTitle').textContent = 'Tambah Foto Baru';
+  document.getElementById('galleryForm').reset();
+  document.getElementById('photoId').value = '';
+}
+
+function hideAddForm() {
+  document.getElementById('photoForm').style.display = 'none';
+}
+
+document.getElementById('galleryForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const id = document.getElementById('photoId').value;
+  const formData = new FormData();
+  formData.append('title', document.getElementById('photoTitle').value);
+  formData.append('description', document.getElementById('photoDesc').value);
+  formData.append('category', document.getElementById('photoCategory').value);
+  const file = document.getElementById('photoImage').files[0];
+  if (file) formData.append('image', file);
+
+  try {
+    const url = id ? `${API}/api/gallery/${id}` : `${API}/api/gallery`;
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, {
+      method,
+      headers: { 'Authorization': `Bearer ${token}` },
+      body: formData
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      toast(id ? 'Foto berhasil diperbarui!' : 'Foto berhasil ditambahkan!');
+      hideAddForm();
+      loadGallery();
+      loadStats();
+    } else {
+      toast(data.error || 'Gagal menyimpan', 'error');
+    }
+  } catch {
+    toast('Gagal terhubung ke server', 'error');
+  }
+});
+
+async function editPhoto(id) {
+  try {
+    const res = await fetch(`${API}/api/gallery/${id}`);
+    const data = await res.json();
+    const item = data.data;
+    showAddForm();
+    document.getElementById('formTitle').textContent = 'Edit Foto';
+    document.getElementById('photoId').value = item.id;
+    document.getElementById('photoTitle').value = item.title;
+    document.getElementById('photoDesc').value = item.description;
+    document.getElementById('photoCategory').value = item.category;
+  } catch {
+    toast('Gagal memuat data foto', 'error');
+  }
+}
+
+async function deletePhoto(id) {
+  if (!confirm('Yakin ingin menghapus foto ini?')) return;
+  try {
+    const res = await fetch(`${API}/api/gallery/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    if (res.ok) {
+      toast('Foto berhasil dihapus!');
+      loadGallery();
+      loadStats();
+    } else {
+      toast('Gagal menghapus foto', 'error');
+    }
+  } catch {
+    toast('Gagal terhubung ke server', 'error');
+  }
+}
+
+/* ── Contacts ────────────────────────────────────────────── */
+async function loadContacts() {
+  try {
+    const res = await fetch(`${API}/api/contact`, {
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await res.json();
+    const tbody = document.getElementById('contactsTableBody');
+    tbody.innerHTML = '';
+
+    (data.data || []).reverse().forEach(item => {
+      const date = new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' });
+      const badge = item.status === 'unread'
+        ? '<span class="badge bg-danger">Belum Dibaca</span>'
+        : '<span class="badge bg-success">Dibaca</span>';
+      tbody.innerHTML += `
+        <tr>
+          <td>${item.email}</td>
+          <td>${item.name || '-'}</td>
+          <td style="max-width:200px; overflow:hidden; text-overflow:ellipsis;">${item.message || '-'}</td>
+          <td>${badge}</td>
+          <td>${date}</td>
+          <td>
+            <button class="btn btn-success btn-action" onclick="markRead(${item.id})" ${item.status === 'read' ? 'disabled' : ''}><i class="fas fa-check"></i></button>
+            <button class="btn btn-danger btn-action" onclick="deleteContact(${item.id})"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>`;
+    });
+  } catch {
+    toast('Gagal memuat pesan', 'error');
+  }
+}
+
+async function markRead(id) {
+  try {
+    await fetch(`${API}/api/contact/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify({ status: 'read' })
+    });
+    loadContacts();
+    loadStats();
+  } catch {
+    toast('Gagal memperbarui status', 'error');
+  }
+}
+
+async function deleteContact(id) {
+  if (!confirm('Yakin ingin menghapus pesan ini?')) return;
+  try {
+    await fetch(`${API}/api/contact/${id}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': `Bearer ${token}` }
+    });
+    toast('Pesan berhasil dihapus!');
+    loadContacts();
+    loadStats();
+  } catch {
+    toast('Gagal menghapus pesan', 'error');
+  }
+}
+</script>
+</body>
+</html>
