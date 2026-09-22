@@ -1,4 +1,4 @@
-import { setCors, handleOptions, signToken, ok, badRequest, unauthorized } from "../_lib.js";
+import db, { setCors, handleOptions, signToken, ok, badRequest, unauthorized } from "../_lib.js";
 
 export default async function handler(req, res) {
   if (handleOptions(req, res)) return;
@@ -13,10 +13,8 @@ export default async function handler(req, res) {
     return badRequest(res, "Username dan password wajib diisi");
   }
 
-  const validUser = process.env.ADMIN_USERNAME || "admin";
-  const validPass = process.env.ADMIN_PASSWORD || "admin123";
-
-  if (username !== validUser || password !== validPass) {
+  // Validasi dari in-memory DB (bisa diubah runtime via /api/auth/update-credentials)
+  if (username !== db.admin.username || password !== db.admin.password) {
     return unauthorized(res, "Username atau password salah");
   }
 

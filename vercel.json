@@ -40,6 +40,10 @@
       "dest": "/api/auth/verify.js"
     },
     {
+      "src": "/api/auth/update-credentials",
+      "dest": "/api/auth/update-credentials.js"
+    },
+    {
       "src": "/api/contact",
       "methods": ["GET", "POST"],
       "dest": "/api/contact.js"

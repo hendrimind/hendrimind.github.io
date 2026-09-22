@@ -35,6 +35,11 @@ const db = {
       createdAt: new Date().toISOString(),
     },
   ],
+  // Admin credentials — di-init dari env, bisa diubah runtime
+  admin: {
+    username: process.env.ADMIN_USERNAME || "admin",
+    password: process.env.ADMIN_PASSWORD || "admin123",
+  },
 };
 
 // ── JWT Helper ────────────────────────────────────

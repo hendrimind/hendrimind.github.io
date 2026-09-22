@@ -64,6 +64,7 @@
     <a href="#" class="active" onclick="showSection('overview', this)"><i class="fas fa-chart-line"></i> Overview</a>
     <a href="#" onclick="showSection('gallery', this)"><i class="fas fa-images"></i> Galeri Foto</a>
     <a href="#" onclick="showSection('contacts', this)"><i class="fas fa-envelope"></i> Pesan Masuk</a>
+    <a href="#" onclick="showSection('settings', this)"><i class="fas fa-cog"></i> Settings</a>
     <a href="#" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
   </div>
 
@@ -157,6 +158,47 @@
         </table>
       </div>
     </div>
+
+    <!-- Settings Section -->
+    <div id="section-settings" style="display:none;">
+      <h2 class="mb-4"><i class="fas fa-cog"></i> Settings</h2>
+      <div class="card-custom" style="max-width: 600px;">
+        <h4 class="mb-3"><i class="fas fa-user-shield"></i> Admin Credentials</h4>
+        <div class="alert alert-info">
+          <i class="fas fa-info-circle"></i> <strong>Info:</strong>
+          Untuk mengganti username & password admin, ikuti langkah berikut di <strong>Vercel Dashboard</strong>.
+        </div>
+        <hr>
+        <h5 class="mb-3"><i class="fas fa-list-ol"></i> Langkah-langkah:</h5>
+        <ol style="line-height: 2;">
+          <li>Buka <a href="https://vercel.com/hendrimind/hendrimind-backend/settings/environment-variables" target="_blank" style="color: #64a19d;">Vercel Dashboard → Settings → Environment Variables</a></li>
+          <li>Cari variable <code>ADMIN_USERNAME</code> → klik edit → ganti nilainya</li>
+          <li>Cari variable <code>ADMIN_PASSWORD</code> → klik edit → ganti nilainya</li>
+          <li>Klik <strong>Save</strong></li>
+          <li>Klik <strong>Redeploy</strong> di halaman Deployments</li>
+          <li>Login ulang di halaman ini dengan credentials baru</li>
+        </ol>
+        <hr>
+        <div class="alert alert-warning mb-0">
+          <i class="fas fa-exclamation-triangle"></i> <strong>Peringatan:</strong>
+          <ul class="mb-0 mt-2">
+            <li>Jangan lupa <strong>Redeploy</strong> setelah mengubah env variables</li>
+            <li>Perubahan berlaku setelah server restart</li>
+            <li>Ganti <code>JWT_SECRET</code> juga untuk keamanan ekstra</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card-custom mt-3" style="max-width: 600px;">
+        <h5 class="mb-3"><i class="fas fa-link"></i> Link Cepat</h5>
+        <a href="https://vercel.com/hendrimind/hendrimind-backend/settings/environment-variables" target="_blank" class="btn btn-primary mb-2">
+          <i class="fas fa-external-link-alt"></i> Buka Vercel Settings
+        </a>
+        <a href="https://vercel.com/hendrimind/hendrimind-backend/deployments" target="_blank" class="btn btn-secondary mb-2">
+          <i class="fas fa-rocket"></i> Deployments
+        </a>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -164,7 +206,7 @@
 <div class="toast-container" id="toastContainer"></div>
 
 <script>
-const API = ''; // same origin
+const API = 'https://hendrimind-backend.vercel.app'; // Vercel backend URL
 let token = localStorage.getItem('admin_token') || '';
 
 /* ── Toast Notification ───────────────────────────────────── */
@@ -242,7 +284,7 @@ function logout() {
 function showSection(section, el) {
   document.querySelectorAll('.sidebar a').forEach(a => a.classList.remove('active'));
   el.classList.add('active');
-  ['overview', 'gallery', 'contacts'].forEach(s => {
+  ['overview', 'gallery', 'contacts', 'settings'].forEach(s => {
     document.getElementById(`section-${s}`).style.display = s === section ? 'block' : 'none';
   });
   if (section === 'gallery') loadGallery();
