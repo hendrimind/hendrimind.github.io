@@ -1,0 +1,28 @@
+# Render Configuration for Hendrimind Backend
+# https://render.com/docs/blueprint-spec
+services:
+  - type: web
+    name: hendrimind-backend
+    runtime: node
+    plan: free
+    region: singapore
+    root: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        value: admin123
+      - key: FRONTEND_URL
+        value: https://hendrimind.github.io
+      - key: BASE_URL
+        renderValue: "https://hendrimind-backend.onrender.com"
